@@ -1,0 +1,43 @@
+# InterLink Genius - WordPress Plugin
+# .gitignore
+
+# Composer
+/vendor/
+composer.lock
+
+# Node / NPM
+/node_modules/
+npm-debug.log*
+
+# Build artifacts
+/assets/js/*.min.js
+/assets/css/*.min.css
+*.map
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# WordPress
+wp-config.php
+wp-content/uploads/
+
+# ZIP exports (không track file zip)
+*.zip
+
+# PHP logs
+*.log
+php_errorlog
+
+# Test files
+/tests/
+/coverage/
+phpunit.xml
+.phpunit.result.cache
