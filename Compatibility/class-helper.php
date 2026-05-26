@@ -40,6 +40,18 @@ class Helper {
 		return array_values( $post_types );
 	}
 
+	public static function choices_post_types() {
+		$post_types = self::get_accessible_post_types();
+		$choices = [];
+		foreach ( $post_types as $post_type ) {
+			$object = get_post_type_object( $post_type );
+			if ( $object ) {
+				$choices[ $post_type ] = $object->label;
+			}
+		}
+		return $choices;
+	}
+
 	public static function get_content_ai_plan() {
 		return [
 			'credits' => 1000,

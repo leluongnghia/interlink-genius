@@ -76,11 +76,31 @@ class Admin {
 	 * Register compatibility scripts to prevent dependency errors when Rank Math is not active.
 	 */
 	public function register_compatibility_scripts() {
-		if ( ! wp_script_is( 'rank-math-components', 'registered' ) ) {
-			wp_register_script( 'rank-math-components', false, [ 'wp-components', 'wp-element', 'lodash' ] );
+		if ( ! wp_style_is( 'rank-math-common', 'registered' ) ) {
+			wp_register_style(
+				'rank-math-common',
+				INTERLINK_GENIUS_URL . 'assets/css/common.css',
+				[],
+				INTERLINK_GENIUS_VERSION
+			);
 		}
+
+		if ( ! wp_script_is( 'rank-math-components', 'registered' ) ) {
+			wp_register_script(
+				'rank-math-components',
+				INTERLINK_GENIUS_URL . 'assets/js/components.js',
+				[ 'lodash', 'wp-components', 'wp-element', 'wp-api-fetch' ],
+				INTERLINK_GENIUS_VERSION,
+				true
+			);
+		}
+
 		if ( ! wp_script_is( 'rank-math-pro-editor', 'registered' ) ) {
-			wp_register_script( 'rank-math-pro-editor', false, [ 'wp-data', 'wp-components', 'wp-element', 'wp-i18n' ] );
+			wp_register_script(
+				'rank-math-pro-editor',
+				false,
+				[ 'wp-data', 'wp-components', 'wp-element', 'wp-i18n' ]
+			);
 		}
 	}
 
@@ -91,6 +111,9 @@ class Admin {
 		if ( Param::get( 'page' ) !== 'interlink-genius' ) {
 			return;
 		}
+
+		wp_enqueue_style( 'wp-components' );
+		wp_enqueue_style( 'rank-math-common' );
 
 		wp_enqueue_script(
 			'rank-math-links-page',
@@ -103,9 +126,33 @@ class Admin {
 		$link_genius_data = [
 			'exportLimit' => Export_Processor::get_export_limit(),
 		];
+
+		$inline_js = 'var rankMath = rankMath || {};';
+		$inline_js .= 'rankMath.api = {';
+		$inline_js .= '  root: ' . wp_json_encode( esc_url_raw( get_rest_url() ) ) . ',';
+		$inline_js .= '  nonce: ' . wp_json_encode( ( wp_installing() && ! is_multisite() ) ? '' : wp_create_nonce( 'wp_rest' ) );
+		$inline_js .= '};';
+		$inline_js .= 'rankMath.links = {';
+		$inline_js .= '  postTypes: ' . wp_json_encode( Helper::choices_post_types() ) . ',';
+		$inline_js .= '  imagesUrl: ' . wp_json_encode( INTERLINK_GENIUS_URL . 'assets/images/' ) . ',';
+		$inline_js .= '  pro: "https://rankmath.com/pricing/",';
+		$inline_js .= '  "content-ai": "https://rankmath.com/content-ai/",';
+		$inline_js .= '  "content-ai-restore-credits": "https://rankmath.com/kb/missing-content-ai-credits/",';
+		$inline_js .= '  support: "https://rankmath.com/support/"';
+		$inline_js .= '};';
+		$inline_js .= 'rankMath.contentAI = {';
+		$inline_js .= '  isUserRegistered: true,';
+		$inline_js .= '  plan: "pro",';
+		$inline_js .= '  credits: 1000,';
+		$inline_js .= '  isMigrating: false,';
+		$inline_js .= '  connectSiteUrl: "",';
+		$inline_js .= '  resetDate: ""';
+		$inline_js .= '};';
+		$inline_js .= 'rankMath.linkGenius = ' . wp_json_encode( $link_genius_data ) . ';';
+
 		wp_add_inline_script(
 			'rank-math-links-page',
-			'var rankMath = rankMath || {}; rankMath.linkGenius = ' . wp_json_encode( $link_genius_data ) . ';',
+			$inline_js,
 			'before'
 		);
 	}
