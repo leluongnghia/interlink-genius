@@ -65,6 +65,14 @@ class Admin {
 	 * Render the React page container.
 	 */
 	public function render_admin_page() {
+		global $wpdb;
+		$meta_table = $wpdb->prefix . 'interlink_genius_internal_meta';
+		if ( $wpdb->get_var( "SHOW TABLES LIKE '$meta_table'" ) === $meta_table ) {
+			$count = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$meta_table}" );
+			if ( 0 === $count ) {
+				\InterLinkGenius\Data\Table_Extension::rebuild_all_internal_meta();
+			}
+		}
 		?>
 		<div class="wrap">
 			<div id="rank-math-links-page-container"></div>
