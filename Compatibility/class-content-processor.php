@@ -16,11 +16,11 @@ use InterLinkGenius\Compatibility\Helpers\DB;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * ContentProcessor class.
+ * Content_Processor class.
  *
  * Xử lý cơ bản: trích xuất link, lưu vào DB, update meta count.
  */
-class ContentProcessor {
+class Content_Processor {
 
 	/**
 	 * Singleton instance.

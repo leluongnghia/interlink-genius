@@ -13,7 +13,7 @@
 namespace InterLinkGenius\Services;
 
 use InterLinkGenius\Compatibility\Link;
-use InterLinkGenius\Compatibility\ContentProcessor as Free_ContentProcessor;
+use InterLinkGenius\Compatibility\Content_Processor as Free_ContentProcessor;
 use InterLinkGenius\Background\Link_Status_Crawler;
 use InterLinkGenius\Data\Query_Builder;
 use InterLinkGenius\Services\Utils;

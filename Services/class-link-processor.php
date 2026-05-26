@@ -29,10 +29,10 @@ class Link_Processor {
 	 * - Consistent usage across all Link Genius features
 	 * - Automatic use of PRO's enhanced extraction via filters
 	 *
-	 * @return \InterLinkGenius\Compatibility\ContentProcessor ContentProcessor singleton instance.
+	 * @return \InterLinkGenius\Compatibility\Content_Processor ContentProcessor singleton instance.
 	 */
 	public static function get_processor() {
-		return \InterLinkGenius\Compatibility\ContentProcessor::get(); // @phpstan-ignore-line
+		return \InterLinkGenius\Compatibility\Content_Processor::get(); // @phpstan-ignore-line
 	}
 
 	/**
