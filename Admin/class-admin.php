@@ -127,7 +127,14 @@ class Admin {
 			'exportLimit' => Export_Processor::get_export_limit(),
 		];
 
-		$inline_js = 'var rankMath = rankMath || {};';
+		$inline_js = 'window.onerror = function(message, source, lineno, colno, error) {';
+		$inline_js .= '  var container = document.getElementById("rank-math-links-page-container");';
+		$inline_js .= '  if (container) {';
+		$inline_js .= '    container.innerHTML = "<div style=\'padding:20px;background:#f8d7da;color:#721c24;border:1px solid #f5c6cb;margin:20px 0;font-family:sans-serif;\'><h3 style=\'margin-top:0;\'>JavaScript Error:</h3><p><b>" + message + "</b></p><p>URL: " + source + " (Line " + lineno + ":" + colno + ")</p>" + (error && error.stack ? "<pre style=\'background:#fff;padding:10px;border:1px solid #ddd;overflow:auto;max-height:300px;text-align:left;font-family:monospace;\'>" + error.stack + "</pre>" : "") + "</div>";';
+		$inline_js .= '  }';
+		$inline_js .= '  return false;';
+		$inline_js .= '};';
+		$inline_js .= 'var rankMath = rankMath || {};';
 		$inline_js .= 'rankMath.api = {';
 		$inline_js .= '  root: ' . wp_json_encode( esc_url_raw( get_rest_url() ) ) . ',';
 		$inline_js .= '  nonce: ' . wp_json_encode( ( wp_installing() && ! is_multisite() ) ? '' : wp_create_nonce( 'wp_rest' ) );
