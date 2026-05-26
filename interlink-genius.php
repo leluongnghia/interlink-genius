@@ -3,7 +3,7 @@
  * Plugin Name:       InterLink Genius
  * Plugin URI:        https://github.com/google-deepmind
  * Description:       A powerful standalone AI-powered internal linking assistant that offers link auditing, bulk link editing, keyword auto-linking, and smart link suggestions.
- * Version:           1.0.2
+ * Version:           1.0.3
  * Author:            Google Deepmind
  * Author URI:        https://github.com/google-deepmind
  * Text Domain:       interlink-genius
@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
 define( 'INTERLINK_GENIUS_FILE', __FILE__ );
 define( 'INTERLINK_GENIUS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'INTERLINK_GENIUS_URL', plugin_dir_url( __FILE__ ) );
-define( 'INTERLINK_GENIUS_VERSION', '1.0.2' );
+define( 'INTERLINK_GENIUS_VERSION', '1.0.3' );
 
 defined( 'CONTENT_AI_URL' ) || define( 'CONTENT_AI_URL', 'https://contentai.rankmath.com' );
 
@@ -54,6 +54,20 @@ spl_autoload_register( function ( $class ) {
 	$file_base  = strtolower( str_replace( '_', '-', $class_name ) );
 	$class_file = $path . 'class-' . $file_base . '.php';
 	$trait_file = $path . 'trait-' . $file_base . '.php';
+
+	// Linux case-sensitivity fallback (ví dụ: Blocks -> blocks)
+	if ( ! file_exists( $class_file ) && ! file_exists( $trait_file ) && ! empty( $parts ) ) {
+		$lower_parts = array_map( 'strtolower', $parts );
+		$path_lower  = INTERLINK_GENIUS_DIR . implode( '/', $lower_parts ) . '/';
+		$class_file_lower = $path_lower . 'class-' . $file_base . '.php';
+		$trait_file_lower = $path_lower . 'trait-' . $file_base . '.php';
+
+		if ( file_exists( $class_file_lower ) ) {
+			$class_file = $class_file_lower;
+		} elseif ( file_exists( $trait_file_lower ) ) {
+			$trait_file = $trait_file_lower;
+		}
+	}
 
 	if ( file_exists( $class_file ) ) {
 		require_once $class_file;
